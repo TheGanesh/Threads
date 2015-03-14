@@ -8,50 +8,49 @@ import java.util.concurrent.*;
  */
 public class ExecutorServiceTest {
 
-    private static int THREAD_POOL_SIZE = 3;
 
     public static void main(String[] args) throws Exception {
 
-        ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+        ThreadpoolTaskExecutor threadpoolExecutor = new ThreadpoolTaskExecutor();
 
-        List<Callable<Job>> callables = new ArrayList<Callable<Job>>();
+        List<Callable<Job>> jobs = new ArrayList<Callable<Job>>();
 
-
-        for (int i = 0; i < 6; i++) {
-            callables.add(new Task(i));
+        for (int i = 0; i < 100; i++) {
+            jobs.add(new JobTask(i));
 
         }
 
         long startTime = System.currentTimeMillis();
-        List<Job> result = new ArrayList<Job>();
 
-        try {
+        List<Job> result = threadpoolExecutor.executeInParallel(jobs);
 
-            for (int i = 0; i < callables.size(); i += THREAD_POOL_SIZE) {
-
-                List<Future<Job>> futures = executorService.invokeAll(callables.subList(i, i + THREAD_POOL_SIZE));
-
-                for (Future<Job> future : futures) {
-                    result.add(future.get());
-                }
-
-                System.out.println("completed "+THREAD_POOL_SIZE+" tasks.");
-
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException();
-        }
-
-
-        executorService.shutdown();
-
-        Collections.sort(result);
 
         for (Job job : result) {
             System.out.println(job.getJobId());
         }
-        System.out.println("time took:" + (System.currentTimeMillis() - startTime));
+        System.out.println("jobs time took:" + (System.currentTimeMillis() - startTime));
+
+
+        List<Callable<Jaffa>> jaffas = new ArrayList<Callable<Jaffa>>();
+
+        for (int i = 0; i < 100; i++) {
+            jaffas.add(new JaffaTask(i));
+
+        }
+
+        startTime = System.currentTimeMillis();
+
+        List<Jaffa> results = threadpoolExecutor.executeInParallel(jaffas);
+
+
+        for (Jaffa jaffa : results) {
+            System.out.println(jaffa.getJaffaId());
+        }
+
+        System.out.println("jaffas time took:" + (System.currentTimeMillis() - startTime));
 
 
     }
+
+
 }

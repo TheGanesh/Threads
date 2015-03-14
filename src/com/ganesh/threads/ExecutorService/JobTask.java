@@ -5,12 +5,12 @@ import java.util.concurrent.Callable;
 /**
  * Created by Ganesh on 3/13/15.
  */
-public class Task implements Callable<Job> {
+public class JobTask implements Callable<Job> {
 
 
     private int id;
 
-    public Task(int id) {
+    public JobTask(int id) {
         this.id = id;
     }
 
@@ -21,7 +21,7 @@ public class Task implements Callable<Job> {
 //            if (id % 2 == 0) {
 //                throw new RuntimeException();
 //            }
-            System.out.println(Thread.currentThread().getName()+" i am running:" + id);
+            System.out.println(Thread.currentThread().getName()+" job running:" + id);
 
             return new Job(id);
     }
